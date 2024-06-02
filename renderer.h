@@ -26,9 +26,10 @@ public:
 class Renderer {
 private:
 	GLFWwindow* window;
-	int quad_vao;
-	int quad_vbo;
-	int quad_ebo;
+	unsigned int quad_vao;
+	unsigned int quad_vbo;
+	unsigned int quad_ebo;
+	unsigned int shader_program;
 public:
 	static Result<Renderer> create();
 
