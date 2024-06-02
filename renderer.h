@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "result.h"
+#include "shader.h"
 
 static bool glfw_present;
 
@@ -29,7 +30,7 @@ private:
 	unsigned int quad_vao;
 	unsigned int quad_vbo;
 	unsigned int quad_ebo;
-	unsigned int shader_program;
+	Shader default_shader;
 public:
 	static Result<Renderer> create();
 

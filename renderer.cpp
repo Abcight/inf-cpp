@@ -1,11 +1,16 @@
 #include "renderer.h"
 #include <iostream>
 
-// The quad vertices used when drawing 2D shapes to the screen
 const float vertices[] = {
-	-0.5f, -0.5f, 0.0f,
+	 0.5f,  0.5f, 0.0f,
 	 0.5f, -0.5f, 0.0f,
-	 0.0f,  0.5f, 0.0f
+	-0.5f, -0.5f, 0.0f,
+	-0.5f,  0.5f, 0.0f
+};
+
+const unsigned int indices[] = {
+	0, 1, 3,
+	1, 2, 3
 };
 
 const char* vertex_shader_src = "#version 330 core\n"
@@ -55,26 +60,25 @@ Result<Renderer> Renderer::create() {
 	glGenVertexArrays(1, &value.quad_vao);
 	glBindVertexArray(value.quad_vao);
 
+	// create element buffer object
+	glGenBuffers(1, &value.quad_ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, value.quad_ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 	// upload quad data to the GPU
 	glGenBuffers(1, &value.quad_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, value.quad_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// upload shader program to the GPU
-	unsigned int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex_shader, 1, &vertex_shader_src, NULL);
-	glCompileShader(vertex_shader);
-
-	unsigned int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment_shader, 1, &fragment_shader_src, NULL);
-	glCompileShader(fragment_shader);
-
-	value.shader_program = glCreateProgram();
-	glAttachShader(value.shader_program, vertex_shader);
-	glAttachShader(value.shader_program, fragment_shader);
-	glLinkProgram(value.shader_program);
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
+	Result<Shader> default_shader = Shader::Create(vertex_shader_src, fragment_shader_src);
+	if (default_shader.is_error()) {
+		return Result<Renderer>::Wrap(
+			"Failed to create default shader:",
+			default_shader.error()
+		);
+	}
+	value.default_shader = default_shader.unwrap();
 
 	// set up attribute pointers
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -90,9 +94,10 @@ void Renderer::draw_frame() {
 	glClearColor(0.6f, 0.6f, 0.7f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glUseProgram(this->shader_program);
+	this->default_shader.bind();
 	glBindVertexArray(this->quad_vao);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_ebo);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();

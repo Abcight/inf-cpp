@@ -18,6 +18,7 @@ public:
 	~Result() { }
 	Result(T value) { m_value = value; }
 	Result(E error) { is_err = true; m_error = error; }
+	static Result Wrap(E error, E inner) { return Result(error + inner); }
 
 	bool is_error() { return is_err; }
 	bool is_value() { return !is_err; }
