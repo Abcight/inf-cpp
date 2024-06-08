@@ -37,7 +37,7 @@ int main() {
 			glm::vec2(0.0f, 0.0f),
 			glm::vec2(100.0f, 100.0f),
 			0.0f,
-			0.0f
+			-1.0f
 		});
 
 		render.draw_frame();

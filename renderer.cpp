@@ -53,7 +53,10 @@ Result<Renderer> Renderer::create() {
 		glfw_present = true;
 	}
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "GLFW Window", NULL, NULL);
+	int width = 800;
+	int height = 600;
+
+	GLFWwindow* window = glfwCreateWindow(width, height, "GLFW Window", NULL, NULL);
 	if (window == NULL)
 		return Result<Renderer>::Result("Failed to create GLFW window");
 
@@ -90,6 +93,8 @@ Result<Renderer> Renderer::create() {
 		);
 	}
 	value.default_shader = default_shader.unwrap();
+	value.screen_width = width;
+	value.screen_height = height;
 
 	// set up attribute pointers
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -137,6 +142,7 @@ void Renderer::execute_command(RenderCommand command) {
 	);
 
 	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(command.scale, 1.0f));
 	model = glm::rotate(model, glm::radians(command.rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::translate(model, glm::vec3(command.position, command.layer));
 
