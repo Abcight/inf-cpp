@@ -5,6 +5,7 @@
 #include <sol/sol.hpp>
 
 #include "renderer.h"
+#include "texture.h"
 
 int main() {
 	sol::state vm;
@@ -17,15 +18,28 @@ int main() {
 	vm.do_string("print('Hello, virtual world!')");
 
 	Result<Renderer> renderer_result = Renderer::create();
-	if (renderer_result.is_error()) {
-		std::cout << renderer_result.error();
+	if (renderer_result.consume(std::cout)) {
 		glfwTerminate();
 		return 0;
 	}
 
-	Renderer& render= renderer_result.unwrap();
+	Renderer& render = renderer_result.unwrap();
+	Result<Texture> texture = Texture::Open("wall.jpg");
+	if (texture.consume(std::cout)) {
+		glfwTerminate();
+		return 0;
+	}
+	texture.unwrap().bind();
+
 	while (render.wants_next_frame())
 	{
+		render.queue_command(RenderCommand{
+			glm::vec2(0.0f, 0.0f),
+			glm::vec2(100.0f, 100.0f),
+			0.0f,
+			0.0f
+		});
+
 		render.draw_frame();
 	}
 

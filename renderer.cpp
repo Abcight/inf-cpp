@@ -1,11 +1,13 @@
 #include "renderer.h"
 #include <iostream>
+#include <glm/glm.hpp>
 
-const float vertices[] = {
-	 0.5f,  0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f,
-	-0.5f,  0.5f, 0.0f
+float vertices[] = {
+	 // Vertices          // UV
+	 0.5f,  0.5f, 0.0f,   1.0f, 1.0f,
+	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
+	-0.5f,  0.5f, 0.0f,   0.0f, 1.0f
 };
 
 const unsigned int indices[] = {
@@ -14,22 +16,31 @@ const unsigned int indices[] = {
 };
 
 const char* vertex_shader_src = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 0) in vec3 a_pos;\n"
+"layout (location = 1) in vec2 a_uv;\n"
+"uniform mat4 model;\n"
+"uniform mat4 view;\n"
+"uniform mat4 projection;\n"
+"out vec2 uv;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   gl_Position = projection * view * model * vec4(a_pos, 1.0);\n"
+"	uv = a_uv;\n"
 "}\0";
 
 const char* fragment_shader_src = "#version 330 core\n"
-"out vec4 FragColor;\n"
+"in vec2 uv;"
+"out vec4 color;\n"
+"uniform sampler2D tex;\n"
 "void main()\n"
 "{\n"
-"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"	color = texture(tex, uv);\n"
 "}\0";
 
 void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-	// TODO: Remove this later
-	// auto renderer = (Renderer*)glfwGetWindowUserPointer(window);
+	auto renderer = (Renderer*)glfwGetWindowUserPointer(window);
+	renderer->screen_width = width;
+	renderer->screen_height = height;
 	glViewport(0, 0, width, height);
 }
 
@@ -81,8 +92,13 @@ Result<Renderer> Renderer::create() {
 	value.default_shader = default_shader.unwrap();
 
 	// set up attribute pointers
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glEnable(GL_DEPTH_TEST);
 
 	return Result<Renderer>::Result(value);
 }
@@ -92,12 +108,16 @@ void Renderer::draw_frame() {
 	glfwSetWindowUserPointer(window, this);
 
 	glClearColor(0.6f, 0.6f, 0.7f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->default_shader.bind();
+	/*this->default_shader.bind();
 	glBindVertexArray(this->quad_vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_ebo);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
+	for(RenderCommand command : command_queue) {
+		this->execute_command(command);
+	}
+	command_queue.clear();
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -106,7 +126,31 @@ void Renderer::draw_frame() {
 }
 
 void Renderer::queue_command(RenderCommand command) {
+	this->command_queue.push_back(command);
+}
 
+void Renderer::execute_command(RenderCommand command) {
+	glm::mat4 projection = glm::ortho(
+		0.0f, (float)this->screen_width,
+		0.0f, (float)this->screen_height,
+		0.1f, 100.0f
+	);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(command.rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::translate(model, glm::vec3(command.position, command.layer));
+
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+
+	this->default_shader.bind();
+	this->default_shader.set_mat4("model", model);
+	this->default_shader.set_mat4("view", view);
+	this->default_shader.set_mat4("projection", projection);
+
+	glBindVertexArray(this->quad_vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_ebo);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 bool Renderer::wants_next_frame() {
