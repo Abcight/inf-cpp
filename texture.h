@@ -2,6 +2,7 @@
 
 #include "bindable.h"
 #include "result.h"
+#include <sol/sol.hpp>
 
 class Texture : Bindable {
 private:
@@ -11,6 +12,7 @@ private:
 	unsigned int handle;
 public:
 	static Result<Texture> Open(std::string path);
+	static void export_type(sol::state& target);
 	void set_smoothing(bool smoothing);
 	void bind();
 };

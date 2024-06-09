@@ -115,11 +115,7 @@ void Renderer::draw_frame() {
 	glClearColor(0.6f, 0.6f, 0.7f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	/*this->default_shader.bind();
-	glBindVertexArray(this->quad_vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_ebo);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
-	for(RenderCommand command : command_queue) {
+	for(RenderCommand &command : command_queue) {
 		this->execute_command(command);
 	}
 	command_queue.clear();
@@ -142,9 +138,9 @@ void Renderer::execute_command(RenderCommand command) {
 	);
 
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(command.scale, 1.0f));
+	model = glm::translate(model, glm::vec3(command.position, -99.0f + command.layer));
 	model = glm::rotate(model, glm::radians(command.rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::translate(model, glm::vec3(command.position, command.layer));
+	model = glm::scale(model, glm::vec3(command.scale, 1.0f));
 
 	glm::mat4 view = glm::mat4(1.0f);
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -154,6 +150,9 @@ void Renderer::execute_command(RenderCommand command) {
 	this->default_shader.set_mat4("view", view);
 	this->default_shader.set_mat4("projection", projection);
 
+	if (command.texture != nullptr)
+		command.texture->bind();
+
 	glBindVertexArray(this->quad_vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_ebo);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -161,4 +160,27 @@ void Renderer::execute_command(RenderCommand command) {
 
 bool Renderer::wants_next_frame() {
 	return !glfwWindowShouldClose(window);
+}
+
+void Renderer::export_type(sol::state &target) {
+	sol::usertype<Renderer> renderer_type = target.new_usertype<Renderer>("Renderer");
+	renderer_type["queue_command"] = &Renderer::queue_command;
+	renderer_type["screen_width"] = sol::readonly(&Renderer::screen_width);
+	renderer_type["screen_height"] = sol::readonly(&Renderer::screen_height);
+}
+
+RenderCommand::RenderCommand() {
+	this->position = glm::vec2(0.0f, 0.0f);
+	this->scale = glm::vec2(1.0f, 1.0f);
+	this->rotation = 0.0f;
+	this->layer = 1.0f;
+}
+
+void RenderCommand::export_type(sol::state &target) {
+	sol::usertype<RenderCommand> command_type = target.new_usertype<RenderCommand>("RenderCommand");
+	command_type["position"] = &RenderCommand::position;
+	command_type["scale"] = &RenderCommand::scale;
+	command_type["rotation"] = &RenderCommand::rotation;
+	command_type["layer"] = &RenderCommand::layer;
+	command_type["texture"] = &RenderCommand::texture;
 }

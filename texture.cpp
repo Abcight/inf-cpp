@@ -39,6 +39,7 @@ Result<Texture> Texture::Open(std::string path) {
 
 	stbi_image_free(bytes);
 
+	result.set_smoothing(true);
 	return Result<Texture>(result);
 }
 
@@ -55,4 +56,13 @@ void Texture::set_smoothing(bool smoothing) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
+}
+
+void Texture::export_type(sol::state& target) {
+	Result<Texture>::export_type(target);
+
+	sol::usertype<Texture> type = target.new_usertype<Texture>("Texture");
+	type["open"] = &Texture::Open;
+	type["width"] = sol::readonly(&Texture::width);
+	type["height"] = sol::readonly(&Texture::height);
 }

@@ -67,7 +67,6 @@ Result<Shader> Shader::Create(std::string vertex_source, std::string fragment_so
 		);
 		std::string name((char*)&uniform_name[0], actual_length);
 		result.uniforms[name] = uniform;
-		std::cout << name << "\n";
 	}
 
 	return Result<Shader>(result);

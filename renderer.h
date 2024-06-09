@@ -2,11 +2,12 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
 #include <glm/glm.hpp>
+#include <sol/sol.hpp>
 #include <vector>
 #include "result.h"
 #include "shader.h"
+#include "texture.h"
 
 static bool glfw_present;
 
@@ -14,11 +15,16 @@ static bool glfw_present;
 /// A singular command issued to the renderer during userland script execution.
 /// </summary>
 class RenderCommand {
-public:
+private:
 	glm::vec2 position;
 	glm::vec2 scale;
 	float rotation;
 	float layer;
+	Texture* texture = nullptr;
+public:
+	RenderCommand();
+	static void export_type(sol::state &target);
+	friend class Renderer;
 };
 
 /// <summary>
@@ -39,6 +45,7 @@ private:
 	friend void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 public:
 	static Result<Renderer> create();
+	static void export_type(sol::state &target);
 
 	bool wants_next_frame();
 	void queue_command(RenderCommand command);
