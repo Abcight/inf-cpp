@@ -44,6 +44,7 @@ private:
 
 	friend void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 public:
+
 	static Result<Renderer> create();
 	static void export_type(sol::state &target);
 
@@ -51,6 +52,7 @@ public:
 	void queue_command(RenderCommand command);
 	void execute_command(RenderCommand command);
 	void draw_frame();
+	GLFWwindow* get_window_ptr();
 };
 
 void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);

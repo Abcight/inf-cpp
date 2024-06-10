@@ -162,6 +162,10 @@ bool Renderer::wants_next_frame() {
 	return !glfwWindowShouldClose(window);
 }
 
+GLFWwindow* Renderer::get_window_ptr() {
+	return this->window;
+}
+
 void Renderer::export_type(sol::state &target) {
 	sol::usertype<Renderer> renderer_type = target.new_usertype<Renderer>("Renderer");
 	renderer_type["queue_command"] = &Renderer::queue_command;

@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <chrono>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -8,22 +9,35 @@
 
 #include "renderer.h"
 #include "texture.h"
+#include "input.h"
 
 static void export_glm(sol::state &target) {
-	sol::usertype<glm::vec2> vec2_type = target.new_usertype<glm::vec2>("Vec2");
-	vec2_type["x"] = &glm::vec2::x;
-	vec2_type["y"] = &glm::vec2::y;
+	sol::usertype<glm::vec2> vec2 = target.new_usertype<glm::vec2>(
+		"Vec2",
+		sol::constructors<glm::vec2(), glm::vec2(float, float)>(),
+		"x", &glm::vec2::x,
+		"y", &glm::vec2::y,
+		"lerp", [](glm::vec2 a, glm::vec2 b, float t) { return glm::mix(a, b, t); }
+	);
 
-	sol::usertype<glm::vec3> vec3_type = target.new_usertype<glm::vec3>("Vec3");
-	vec3_type["x"] = &glm::vec3::x;
-	vec3_type["y"] = &glm::vec3::y;
-	vec3_type["z"] = &glm::vec3::z;
+	sol::usertype<glm::vec3> vec3 = target.new_usertype<glm::vec3>(
+		"Vec3",
+		sol::constructors<glm::vec3(), glm::vec3(float, float, float)>(),
+		"x", &glm::vec3::x,
+		"y", &glm::vec3::y,
+		"z", &glm::vec3::z,
+		"lerp", [](glm::vec3 a, glm::vec3 b, float t) { return glm::mix(a, b, t); }
+	);
 
-	sol::usertype<glm::vec4> vec4_type = target.new_usertype<glm::vec4>("Vec4");
-	vec4_type["x"] = &glm::vec4::x;
-	vec4_type["y"] = &glm::vec4::y;
-	vec4_type["z"] = &glm::vec4::z;
-	vec4_type["a"] = &glm::vec4::a;
+	sol::usertype<glm::vec4> vec4 = target.new_usertype<glm::vec4>(
+		"Vec4",
+		sol::constructors<glm::vec4(), glm::vec4(float, float, float, float)>(),
+		"x", &glm::vec4::x,
+		"y", &glm::vec4::y,
+		"z", &glm::vec4::z,
+		"a", &glm::vec4::a,
+		"lerp", [](glm::vec4 a, glm::vec4 b, float t) { return glm::mix(a, b, t); }
+	);
 }
 
 int main() {
@@ -37,6 +51,7 @@ int main() {
 		return 0;
 	}
 	Renderer& renderer = renderer_result.unwrap();
+	Input input(renderer.get_window_ptr());
 
 	// initialize the vm
 	sol::state vm;
@@ -51,6 +66,7 @@ int main() {
 	Renderer::export_type(vm);
 	RenderCommand::export_type(vm);
 	Texture::export_type(vm);
+	Input::export_type(vm);
 	export_glm(vm);
 
 	auto result = vm.safe_script_file("main.lua", &sol::script_pass_on_error);
@@ -62,13 +78,21 @@ int main() {
 		return 0;
 	}
 
-
 	vm["Renderer"] = &renderer;
+	vm["Input"] = &input;
 
 	// start the main loop
+	auto last_frame_time = std::chrono::steady_clock::now();
 	while (renderer.wants_next_frame())
 	{
+		input.update_keymap();
+
+		auto frame_time = std::chrono::steady_clock::now();
+		auto frame_dt = std::chrono::duration_cast<std::chrono::milliseconds>(frame_time - last_frame_time);
+		vm["G_DT"] = frame_dt.count() / 1000.0f;
 		auto result = vm["Update"]();
+		last_frame_time = frame_time;
+
 		if (!result.valid())
 		{
 			sol::error error = result;
