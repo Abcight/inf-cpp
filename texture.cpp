@@ -7,6 +7,8 @@
 
 Result<Texture> Texture::Open(std::string path) {
 	Texture result;
+	result.gpu_destructor = glDeleteTextures;
+
 	unsigned char* bytes;
 
 	stbi_set_flip_vertically_on_load(true);
@@ -40,6 +42,7 @@ Result<Texture> Texture::Open(std::string path) {
 	stbi_image_free(bytes);
 
 	result.set_smoothing(true);
+
 	return Result<Texture>(result);
 }
 

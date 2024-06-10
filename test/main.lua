@@ -1,6 +1,15 @@
 G_TEXTURE_WALL = Texture.open("wall.jpg"):unwrap();
 G_TEXTURE_DOGE = Texture.open("doge.jpg"):unwrap();
 
+function Test()
+	local TABLE = {}
+	for i=1, 100 do
+		TABLE[i] = Texture.open("wall.jpg"):unwrap();
+	end
+end
+
+Test()
+
 function Update()
 	local targets = {G_TEXTURE_WALL, G_TEXTURE_DOGE};
 	for i, target in pairs(targets) do

@@ -6,11 +6,11 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "bindable.h"
+#include "globject.h"
 #include "result.h"
 
-class Shader : Bindable {
+class Shader : Bindable, GlObject<SINGULAR_DESTRUCTOR> {
 private:
-	int program_handle;
 	std::map<std::string, int> uniforms;
 public:
 	static Result<Shader> Create(std::string vertex_source, std::string fragment_source);

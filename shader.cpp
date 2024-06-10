@@ -39,10 +39,10 @@ Result<Shader> Shader::Create(std::string vertex_source, std::string fragment_so
 
 	// link both shaders into a single program
 	Shader result;
-	result.program_handle = glCreateProgram();
-	glAttachShader(result.program_handle, vertex_shader);
-	glAttachShader(result.program_handle, fragment_shader);
-	glLinkProgram(result.program_handle);
+	result.handle = glCreateProgram();
+	glAttachShader(result.handle, vertex_shader);
+	glAttachShader(result.handle, fragment_shader);
+	glLinkProgram(result.handle);
 
 	// remove link artifacts
 	glDeleteShader(vertex_shader);
@@ -51,13 +51,13 @@ Result<Shader> Shader::Create(std::string vertex_source, std::string fragment_so
 	// get program uniforms from the GPU and cache them
 	int uniform_count = 0;
 	std::vector<GLchar> uniform_name(256);
-	glGetProgramiv(result.program_handle, GL_ACTIVE_UNIFORMS, &uniform_count);
+	glGetProgramiv(result.handle, GL_ACTIVE_UNIFORMS, &uniform_count);
 	for (int uniform = 0; uniform < uniform_count; uniform++) {
 		int array_size = 0;
 		int actual_length = 0;
 		unsigned int type = 0;
 		glGetActiveUniform(
-			result.program_handle,
+			result.handle,
 			uniform,
 			uniform_name.size(),
 			&actual_length,
@@ -69,11 +69,14 @@ Result<Shader> Shader::Create(std::string vertex_source, std::string fragment_so
 		result.uniforms[name] = uniform;
 	}
 
+	// set gpu destructor
+	result.gpu_destructor = glDeleteProgram;
+
 	return Result<Shader>(result);
 }
 
 void Shader::bind() {
-	glUseProgram(this->program_handle);
+	glUseProgram(this->handle);
 }
 
 void Shader::set_int(const char* name, int value) {
