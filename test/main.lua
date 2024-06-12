@@ -1,5 +1,6 @@
 G_TEXTURE_WALL = Texture.open("wall.jpg"):unwrap();
 G_TEXTURE_DOGE = Texture.open("doge.jpg"):unwrap();
+G_SOUND_BARK = Audio.open("dog.ogg"):unwrap();
 
 -- G_DT: Frame delta in seconds
 
@@ -17,6 +18,10 @@ function Update()
 	p_command.position = p_pos;
 	p_command.texture = G_TEXTURE_DOGE;
 	Renderer:queue_command(p_command);
+
+	if Input:get_key_down(' ') then
+		G_SOUND_BARK:play();
+	end
 
 	local targets = {G_TEXTURE_WALL, G_TEXTURE_DOGE};
 	for i, target in pairs(targets) do

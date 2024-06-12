@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-Result<Shader> Shader::Create(std::string vertex_source, std::string fragment_source) {
+Result<Shader> Shader::create(std::string vertex_source, std::string fragment_source) {
 	// allocate data to take compilation info out
 	int success;
 	char info_log[512];

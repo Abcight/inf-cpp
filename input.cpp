@@ -11,8 +11,8 @@ Input::Input(GLFWwindow* window_ptr) {
 void Input::update_keymap() {
 	for (int key = 0; key < GLFW_KEY_LAST; key++) {
 		bool hold = glfwGetKey(this->window_ptr, key);
+		this->key_map_press[key] = !this->key_map_hold[key] && hold;
 		this->key_map_hold[key] = hold;
-		this->key_map_press[key] = !this->key_map_press[key] && hold;
 	}
 }
 

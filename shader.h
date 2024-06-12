@@ -13,7 +13,7 @@ class Shader : Bindable, GlObject<SINGULAR_DESTRUCTOR> {
 private:
 	std::map<std::string, int> uniforms;
 public:
-	static Result<Shader> Create(std::string vertex_source, std::string fragment_source);
+	static Result<Shader> create(std::string vertex_source, std::string fragment_source);
 	void bind();
 	void set_int(const char* name, int value);
 	void set_float(const char* name, float value);

@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-Result<Texture> Texture::Open(std::string path) {
+Result<Texture> Texture::open(std::string path) {
 	Texture result;
 	result.gpu_destructor = glDeleteTextures;
 
@@ -65,7 +65,7 @@ void Texture::export_type(sol::state& target) {
 	Result<Texture>::export_type(target);
 
 	sol::usertype<Texture> type = target.new_usertype<Texture>("Texture");
-	type["open"] = &Texture::Open;
+	type["open"] = &Texture::open;
 	type["width"] = sol::readonly(&Texture::width);
 	type["height"] = sol::readonly(&Texture::height);
 }

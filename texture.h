@@ -11,7 +11,7 @@ private:
 	int height;
 	int channel_count;
 public:
-	static Result<Texture> Open(std::string path);
+	static Result<Texture> open(std::string path);
 	static void export_type(sol::state& target);
 	void set_smoothing(bool smoothing);
 	void bind();

@@ -85,7 +85,7 @@ Result<Renderer> Renderer::create() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// upload shader program to the GPU
-	Result<Shader> default_shader = Shader::Create(vertex_shader_src, fragment_shader_src);
+	Result<Shader> default_shader = Shader::create(vertex_shader_src, fragment_shader_src);
 	if (default_shader.is_error()) {
 		return Result<Renderer>::Wrap(
 			"Failed to create default shader:",

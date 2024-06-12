@@ -10,6 +10,7 @@
 #include "renderer.h"
 #include "texture.h"
 #include "input.h"
+#include "audio.h"
 
 static void export_glm(sol::state &target) {
 	sol::usertype<glm::vec2> vec2 = target.new_usertype<glm::vec2>(
@@ -44,7 +45,7 @@ int main() {
 	// set working path
 	std::filesystem::current_path("./test/");
 
-	// initialize renderer
+	// initialize renderer & input
 	Result<Renderer> renderer_result = Renderer::create();
 	if (renderer_result.consume(std::cout)) {
 		glfwTerminate();
@@ -67,6 +68,7 @@ int main() {
 	RenderCommand::export_type(vm);
 	Texture::export_type(vm);
 	Input::export_type(vm);
+	Audio::export_type(vm);
 	export_glm(vm);
 
 	auto result = vm.safe_script_file("main.lua", &sol::script_pass_on_error);
