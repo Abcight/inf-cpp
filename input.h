@@ -9,8 +9,8 @@
 class Input {
 private:
 	GLFWwindow* window_ptr;
-	std::map<char, bool> key_map_press;
-	std::map<char, bool> key_map_hold;
+	bool key_map_press[GLFW_KEY_LAST];
+	bool key_map_hold[GLFW_KEY_LAST];
 public:
 	void update_keymap();
 	bool get_key(char key);

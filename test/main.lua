@@ -9,7 +9,7 @@ function Update()
 	p_pos = Vec2.lerp(
 		Input:get_cursor_position(),
 		p_pos,
-		math.pow(0.1, G_DT)
+		math.pow(0.01, G_DT)
 	);
 
 	local p_command = RenderCommand.new();
