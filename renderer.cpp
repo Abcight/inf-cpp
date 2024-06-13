@@ -150,8 +150,9 @@ void Renderer::execute_command(RenderCommand command) {
 	this->default_shader.set_mat4("view", view);
 	this->default_shader.set_mat4("projection", projection);
 
-	if (command.texture != nullptr)
-		command.texture->bind();
+	for (Bindable* bindable : command.bindables) {
+		bindable->bind();
+	}
 
 	glBindVertexArray(this->quad_vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_ebo);
@@ -180,11 +181,60 @@ RenderCommand::RenderCommand() {
 	this->layer = 1.0f;
 }
 
+RenderCommand& RenderCommand::with(Bindable* bindable) {
+	this->bindables.push_back(bindable);
+	return *this;
+}
+
+RenderCommand& RenderCommand::with_position(glm::vec2 position) {
+	this->position = position;
+	return *this;
+}
+
+RenderCommand& RenderCommand::with_position_xy(float x, float y) {
+	this->position.x = x;
+	this->position.y = y;
+	return *this;
+}
+
+RenderCommand& RenderCommand::with_scale(glm::vec2 scale) {
+	this->scale = scale;
+	return *this;
+}
+
+RenderCommand& RenderCommand::with_scale_xy(float x, float y) {
+	this->scale.x = x;
+	this->scale.y = y;
+	return *this;
+}
+
+RenderCommand& RenderCommand::with_rotation(float rotation) {
+	this->rotation = rotation;
+	return *this;
+}
+
+RenderCommand& RenderCommand::with_layer(float layer) {
+	this->layer = layer;
+	return *this;
+}
+
 void RenderCommand::export_type(sol::state &target) {
-	sol::usertype<RenderCommand> command_type = target.new_usertype<RenderCommand>("RenderCommand");
-	command_type["position"] = &RenderCommand::position;
-	command_type["scale"] = &RenderCommand::scale;
-	command_type["rotation"] = &RenderCommand::rotation;
-	command_type["layer"] = &RenderCommand::layer;
-	command_type["texture"] = &RenderCommand::texture;
+	target.new_usertype<RenderCommand>(
+		"RenderCommand",
+		"position", &RenderCommand::position,
+		"scale", &RenderCommand::scale,
+		"rotation", &RenderCommand::rotation,
+		"layer", &RenderCommand::layer,
+		"with", &RenderCommand::with,
+		"with_position", sol::overload(
+			&RenderCommand::with_position,
+			&RenderCommand::with_position_xy
+		),
+		"with_scale", sol::overload(
+			&RenderCommand::with_scale,
+			&RenderCommand::with_scale_xy
+		),
+		"with_rotation", &RenderCommand::with_rotation,
+		"with_layer", &RenderCommand::with_layer
+	);
 }

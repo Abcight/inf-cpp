@@ -35,8 +35,7 @@ void Audio::play() {
 
 void Audio::export_type(sol::state& target) {
 	Result<Audio>::export_type(target);
-
-	sol::usertype<Audio> audio = target.new_usertype<Audio>(
+	target.new_usertype<Audio>(
 		"Audio",
 		"open", &Audio::open,
 		"play", &Audio::play
