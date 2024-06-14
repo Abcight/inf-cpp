@@ -135,6 +135,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="audio.cpp" />
+    <ClCompile Include="bindables.cpp" />
+    <ClCompile Include="color.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="globject.cpp" />
     <ClCompile Include="input.cpp" />
@@ -146,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="audio.h" />
     <ClInclude Include="bindable.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="globject.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="texture.h" />

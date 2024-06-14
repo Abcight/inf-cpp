@@ -11,6 +11,7 @@
 #include "texture.h"
 #include "input.h"
 #include "audio.h"
+#include "color.h"
 
 static void export_glm(sol::state &target) {
 	sol::usertype<glm::vec2> vec2 = target.new_usertype<glm::vec2>(
@@ -58,6 +59,7 @@ int main() {
 	sol::state vm;
 	vm.open_libraries(
 		sol::lib::base,
+		sol::lib::package,
 		sol::lib::math,
 		sol::lib::io,
 		sol::lib::table,
@@ -69,6 +71,7 @@ int main() {
 	Texture::export_type(vm);
 	Input::export_type(vm);
 	Audio::export_type(vm);
+	Color::export_type(vm);
 	export_glm(vm);
 
 	auto result = vm.safe_script_file("main.lua", &sol::script_pass_on_error);

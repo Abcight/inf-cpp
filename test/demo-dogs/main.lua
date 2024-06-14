@@ -14,7 +14,6 @@ function Update()
 	Renderer:queue_command(
 		RenderCommand:new()
 			:with(G_TEXTURE_DOGE)
-			:with(Color.RED)
 			:with_scale(100, 100)
 			:with_position(p_pos)
 	);

@@ -20,7 +20,8 @@ private:
 	glm::vec2 scale;
 	float rotation;
 	float layer;
-	std::vector<Bindable*> bindables;
+	Bindable* bindables[10];
+	int bindables_length = 0;
 public:
 	RenderCommand();
 	static void export_type(sol::state &target);

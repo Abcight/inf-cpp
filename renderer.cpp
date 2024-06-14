@@ -30,11 +30,12 @@ const char* vertex_shader_src = "#version 330 core\n"
 
 const char* fragment_shader_src = "#version 330 core\n"
 "in vec2 uv;"
-"out vec4 color;\n"
+"out vec4 fragment;\n"
 "uniform sampler2D tex;\n"
+"uniform vec4 color = vec4(1.0, 1.0, 1.0, 1.0);"
 "void main()\n"
 "{\n"
-"	color = texture(tex, uv);\n"
+"	fragment = texture(tex, uv) * color;\n"
 "}\0";
 
 void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -149,9 +150,10 @@ void Renderer::execute_command(RenderCommand command) {
 	this->default_shader.set_mat4("model", model);
 	this->default_shader.set_mat4("view", view);
 	this->default_shader.set_mat4("projection", projection);
+	this->default_shader.set_vec4("color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	for (Bindable* bindable : command.bindables) {
-		bindable->bind();
+	for (int i = 0; i < command.bindables_length; i++) {
+		command.bindables[i]->bind();
 	}
 
 	glBindVertexArray(this->quad_vao);
@@ -182,7 +184,7 @@ RenderCommand::RenderCommand() {
 }
 
 RenderCommand& RenderCommand::with(Bindable* bindable) {
-	this->bindables.push_back(bindable);
+	this->bindables[bindables_length++] = bindable;
 	return *this;
 }
 
