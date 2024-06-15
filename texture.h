@@ -5,12 +5,14 @@
 #include "result.h"
 #include <sol/sol.hpp>
 
-class Texture : Bindable, GlObject<MULTIPLE_DESTRUCTOR> {
+class Texture : Bindable, public GlObject<MULTIPLE_DESTRUCTOR> {
 private:
 	int width;
 	int height;
 	int channel_count;
 public:
+	Texture();
+	Texture(unsigned int width, unsigned int height);
 	static Result<Texture> open(std::string path);
 	static void export_type(sol::state& target);
 	void set_smoothing(bool smoothing);

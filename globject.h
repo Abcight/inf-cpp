@@ -11,6 +11,7 @@ private:
 	std::shared_ptr<void*> counter;
 public:
 	unsigned int handle;
+	virtual void extra_delete() {};
 	T gpu_destructor;
 	GlObject();
 	~GlObject();

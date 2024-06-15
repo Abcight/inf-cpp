@@ -8,6 +8,7 @@
 #include "result.h"
 #include "shader.h"
 #include "bindable.h"
+#include "framebuffer.h"
 
 static bool glfw_present;
 
@@ -20,11 +21,13 @@ private:
 	glm::vec2 scale;
 	float rotation;
 	float layer;
-	Bindable* bindables[10];
+	Framebuffer* target = nullptr;
+	Bindable** bindables;
 	int bindables_length = 0;
 public:
 	RenderCommand();
 	static void export_type(sol::state &target);
+	RenderCommand& to(Framebuffer* buffer);
 	RenderCommand& with(Bindable* bindable);
 	RenderCommand& with_position(glm::vec2 position);
 	RenderCommand& with_position_xy(float x, float y);
@@ -52,7 +55,6 @@ private:
 
 	friend void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 public:
-
 	static Result<Renderer> create();
 	static void export_type(sol::state &target);
 

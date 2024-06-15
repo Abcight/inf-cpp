@@ -5,6 +5,24 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+Texture::Texture() {
+	this->width = 0;
+	this->height = 0;
+	this->channel_count = 0;
+	this->handle = 0;
+	this->gpu_destructor = glDeleteTextures;
+}
+
+Texture::Texture(unsigned int width, unsigned int height) {
+	glGenTextures(1, &this->handle);
+	glBindTexture(GL_TEXTURE_2D, this->handle);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	this->gpu_destructor = glDeleteTextures;
+}
+
 Result<Texture> Texture::open(std::string path) {
 	Texture result;
 	result.gpu_destructor = glDeleteTextures;

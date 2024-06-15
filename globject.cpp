@@ -12,6 +12,7 @@ template<>
 GlObject<SINGULAR_DESTRUCTOR>::~GlObject() {
 	if (this->counter.use_count() == 1) {
 		this->gpu_destructor(this->handle);
+		this->extra_delete();
 	}
 }
 
@@ -26,5 +27,6 @@ template<>
 GlObject<MULTIPLE_DESTRUCTOR>::~GlObject() {
 	if (this->counter.use_count() == 1) {
 		this->gpu_destructor(1, &this->handle);
+		this->extra_delete();
 	}
 }

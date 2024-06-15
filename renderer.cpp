@@ -1,6 +1,8 @@
-#include "renderer.h"
 #include <iostream>
 #include <glm/glm.hpp>
+
+#include "renderer.h"
+#include "framebuffer.h"
 
 float vertices[] = {
 	 // Vertices          // UV
@@ -113,7 +115,9 @@ void Renderer::draw_frame() {
 	glfwMakeContextCurrent(window);
 	glfwSetWindowUserPointer(window, this);
 
+	glEnable(GL_BLEND);
 	glClearColor(0.6f, 0.6f, 0.7f, 1.0f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for(RenderCommand &command : command_queue) {
@@ -132,6 +136,12 @@ void Renderer::queue_command(RenderCommand command) {
 }
 
 void Renderer::execute_command(RenderCommand command) {
+	if (command.target != nullptr) {
+		command.target->bind();
+	} else {
+		Framebuffer::reset_to_default();
+	}
+
 	glm::mat4 projection = glm::ortho(
 		0.0f, (float)this->screen_width,
 		0.0f, (float)this->screen_height,
@@ -181,10 +191,17 @@ RenderCommand::RenderCommand() {
 	this->scale = glm::vec2(1.0f, 1.0f);
 	this->rotation = 0.0f;
 	this->layer = 1.0f;
+	this->bindables = new Bindable* [10];
+}
+
+RenderCommand& RenderCommand::to(Framebuffer* buffer) {
+	this->target = buffer;
+	return *this;
 }
 
 RenderCommand& RenderCommand::with(Bindable* bindable) {
-	this->bindables[bindables_length++] = bindable;
+	this->bindables[bindables_length] = bindable;
+	bindables_length++;
 	return *this;
 }
 
@@ -227,6 +244,7 @@ void RenderCommand::export_type(sol::state &target) {
 		"scale", &RenderCommand::scale,
 		"rotation", &RenderCommand::rotation,
 		"layer", &RenderCommand::layer,
+		"to", &RenderCommand::to,
 		"with", &RenderCommand::with,
 		"with_position", sol::overload(
 			&RenderCommand::with_position,

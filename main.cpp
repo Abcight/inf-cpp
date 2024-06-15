@@ -12,6 +12,7 @@
 #include "input.h"
 #include "audio.h"
 #include "color.h"
+#include "framebuffer.h"
 
 static void export_glm(sol::state &target) {
 	sol::usertype<glm::vec2> vec2 = target.new_usertype<glm::vec2>(
@@ -68,11 +69,15 @@ int main() {
 
 	Renderer::export_type(vm);
 	RenderCommand::export_type(vm);
+	Framebuffer::export_type(vm);
 	Texture::export_type(vm);
 	Input::export_type(vm);
 	Audio::export_type(vm);
 	Color::export_type(vm);
 	export_glm(vm);
+
+	vm["Renderer"] = &renderer;
+	vm["Input"] = &input;
 
 	auto result = vm.safe_script_file("main.lua", &sol::script_pass_on_error);
 	if (!result.valid())
@@ -82,9 +87,6 @@ int main() {
 		glfwTerminate();
 		return 0;
 	}
-
-	vm["Renderer"] = &renderer;
-	vm["Input"] = &input;
 
 	// start the main loop
 	auto last_frame_time = std::chrono::steady_clock::now();
