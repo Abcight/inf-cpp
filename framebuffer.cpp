@@ -43,12 +43,9 @@ void Framebuffer::reset_to_default() {
 
 void Framebuffer::clear() {
 	glBindFramebuffer(GL_FRAMEBUFFER, this->handle);
+	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Framebuffer::export_type(sol::state& target) {

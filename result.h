@@ -12,7 +12,7 @@ template <typename T>
 struct Result {
 private:
 	bool is_err = false;
-	T m_value; // Note: Could be a union, but this is generally fine
+	T m_value;
 	std::string m_error;
 
 	// This is a private unwrap behavior for Lua, where we have access

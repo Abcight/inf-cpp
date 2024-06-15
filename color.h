@@ -4,6 +4,11 @@
 #include <sol/sol.hpp>
 #include "bindable.h"
 
+/// <summary>
+/// A convenience class that encapsulates Vec4 into
+/// distinct color values, while providing a bindable
+/// interface.
+/// </summary>
 class Color : Bindable {
 private:
 	glm::vec4 color;

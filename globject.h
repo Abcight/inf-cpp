@@ -5,6 +5,11 @@
 #include <GLFW/glfw3.h>
 #include <memory>
 
+/// <summary>
+/// Represents a manageable GlObject. Deriving this will
+/// automatically perform memory management for the underlying
+/// OpenGL object, so long as the gpu_destructor is provided.
+/// </summary>
 template <typename T>
 class GlObject {
 private:

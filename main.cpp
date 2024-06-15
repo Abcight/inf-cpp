@@ -43,18 +43,17 @@ static void export_glm(sol::state &target) {
 	);
 }
 
-int main() {
-	// set working path
-	std::filesystem::current_path("./test/");
-
-	// initialize renderer & input
-	Result<Renderer> renderer_result = Renderer::create();
-	if (renderer_result.consume(std::cout)) {
-		glfwTerminate();
-		return 0;
+int main(int argc, char* argv[]) {
+	// select the project path
+	std::string target;
+	if (argc <= 1) {
+		target = "./test";
+	} else {
+		target = std::string(argv[1]);
 	}
-	Renderer& renderer = renderer_result.unwrap();
-	Input input(renderer.get_window_ptr());
+
+	// set working path
+	std::filesystem::current_path(target);
 
 	// initialize the vm
 	sol::state vm;
@@ -76,19 +75,34 @@ int main() {
 	Color::export_type(vm);
 	export_glm(vm);
 
+	// read config
+	vm.safe_script_file("config.lua", &sol::script_pass_on_error);
+	int width = vm.get_or("window_width", 640);
+	int height = vm.get_or("window_height", 480);
+	std::string title = vm.get_or("window_title", std::string("2D Engine"));
+
+	// initialize renderer & input
+	Result<Renderer> renderer_result = Renderer::create();
+	if (renderer_result.consume(std::cout)) {
+		glfwTerminate();
+		return 0;
+	}
+	Renderer& renderer = renderer_result.unwrap();
+	Input input(renderer.get_window_ptr());
+
+	// export engine vars and load main script file
 	vm["Renderer"] = &renderer;
 	vm["Input"] = &input;
 
 	auto result = vm.safe_script_file("main.lua", &sol::script_pass_on_error);
 	if (!result.valid())
 	{
-		sol::error error = result;
-		std::cout << error.what() << std::endl;
-		glfwTerminate();
+		std::cout << "Didn't detect any projects! Drag and drop a directory with main.lua onto the compiled executable.";
+		std::getchar();
 		return 0;
 	}
 
-	// start the main loop
+	// perform the main loop
 	auto last_frame_time = std::chrono::steady_clock::now();
 	while (renderer.wants_next_frame())
 	{

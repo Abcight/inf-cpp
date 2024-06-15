@@ -3,6 +3,10 @@
 #include <sol/sol.hpp>
 #include "result.h"
 
+/// <summary>
+/// Represents a singular audio file loaded into the program's memory.
+/// Supports playing through the irrklang sound engine.
+/// </summary>
 class Audio {
 private:
 	static irrklang::ISoundEngine* ENGINE;

@@ -5,6 +5,10 @@
 #include "result.h"
 #include <sol/sol.hpp>
 
+/// <summary>
+/// An object that represents an OpenGL texture.
+/// It can be either loaded from file (stb lib) or allocated.
+/// </summary>
 class Texture : Bindable, public GlObject<MULTIPLE_DESTRUCTOR> {
 private:
 	int width;

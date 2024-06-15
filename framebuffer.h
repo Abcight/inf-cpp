@@ -6,6 +6,10 @@
 #include "globject.h"
 #include "texture.h"
 
+/// <summary>
+/// Represents an OpenGL Framebuffer Object.
+/// For more, see https://www.khronos.org/opengl/wiki/Framebuffer_Object
+/// </summary>
 class Framebuffer : GlObject<MULTIPLE_DESTRUCTOR>, Bindable {
 private:
 	Texture texture;

@@ -6,6 +6,10 @@
 #include <sol/sol.hpp>
 #include <glm/glm.hpp>
 
+/// <summary>
+/// An object that tracks user input (keyboard/mouse) for
+/// a specified GLFW window.
+/// </summary>
 class Input {
 private:
 	GLFWwindow* window_ptr;
