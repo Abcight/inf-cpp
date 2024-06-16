@@ -146,6 +146,7 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="render_command.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="audio.h" />
     <ClInclude Include="bindable.h" />
     <ClInclude Include="color.h" />
+    <ClInclude Include="command.h" />
     <ClInclude Include="framebuffer.h" />
     <ClInclude Include="glmexport.h" />
     <ClInclude Include="globject.h" />
