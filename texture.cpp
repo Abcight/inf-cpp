@@ -13,6 +13,10 @@ Texture::Texture() : GlObject(glDeleteTextures) {
 }
 
 Texture::Texture(unsigned int width, unsigned int height) : GlObject(glDeleteTextures) {
+	this->width = width;
+	this->height = height;
+	this->channel_count = 0;
+
 	glGenTextures(1, &this->handle);
 	glBindTexture(GL_TEXTURE_2D, this->handle);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -41,17 +45,7 @@ Result<Texture> Texture::open(std::string path) {
 
 	glGenTextures(1, &result.handle);
 	glBindTexture(GL_TEXTURE_2D, result.handle);
-	glTexImage2D(
-		GL_TEXTURE_2D,
-		0,
-		GL_RGB,
-		result.width,
-		result.height,
-		0,
-		GL_RGB,
-		GL_UNSIGNED_BYTE,
-		bytes
-	);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(bytes);

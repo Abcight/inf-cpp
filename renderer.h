@@ -27,6 +27,7 @@ private:
 public:
 	RenderCommand();
 	static void export_type(sol::state &target);
+	static bool ord_layer(RenderCommand& a, RenderCommand& b);
 	RenderCommand& to(Framebuffer* buffer);
 	RenderCommand& with(Bindable* bindable);
 	RenderCommand& with_position(glm::vec2 position);
@@ -58,10 +59,23 @@ public:
 	static Result<Renderer> create(int width, int height, std::string title);
 	static void export_type(sol::state &target);
 
+	// Does the program want to continue?
 	bool wants_next_frame();
+
+	// Pushes a command into the command queue
 	void queue_command(RenderCommand command);
+
+	// Executes a command immediatelly
 	void execute_command(RenderCommand command);
+
+	// Executes all queued commands
 	void draw_frame();
+
+	// Exit and pause execution, kill the system window
+	void quit();
+
+	// Returns the underlying system window pointer
+	// This is the window this renderer will be drawing to
 	GLFWwindow* get_window_ptr();
 };
 

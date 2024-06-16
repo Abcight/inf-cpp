@@ -6,6 +6,10 @@
 /// A simple, single header wrapper type that represents either
 /// a value or an error. This allows for error-by-value evaluation,
 /// which I consider cleaner than the throw-catch mechanism.
+///
+/// This is a fat wrapper. Unlike the std::expected, this one provides
+/// numerous convenience methods and only allows to store one type of
+/// error (std::string).
 /// </summary>
 /// <typeparam name="T">Value type, if successful.</typeparam>
 template <typename T>

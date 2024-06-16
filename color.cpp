@@ -3,10 +3,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// =====================================================
 // This is a free and open color pallete by mrmrs
 // https://clrs.cc/ courtesy of https://github.com/mrmrs
-// =====================================================
+
 const Color Color::NAVY		(0x001f3f);
 const Color Color::BLUE		(0x0074D9);
 const Color Color::AQUA		(0x7FDBFF);

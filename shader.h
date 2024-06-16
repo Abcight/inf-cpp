@@ -12,6 +12,7 @@
 /// <summary>
 /// An object that represents a program running on the GPU.
 /// All shader programs are expected to be written in GLSL.
+/// For more, see https://www.khronos.org/opengl/wiki/Shader_Compilation
 /// </summary>
 class Shader : Bindable, GlObject<SINGULAR_DESTRUCTOR> {
 private:

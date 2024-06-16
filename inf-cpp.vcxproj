@@ -139,7 +139,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="audio.cpp" />
-    <ClCompile Include="bindables.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="framebuffer.cpp" />
     <ClCompile Include="glad.c" />

@@ -30,11 +30,22 @@ public:
 	const static Color SILVER;
 	const static Color WHITE;
 
+	// Constructs the default color (white)
 	Color();
+
+	// Decomposes a vector (r, g, b, a) into a color
 	Color(glm::vec4 color);
+
+	// Creates a color from the given rgba values
 	Color(float r, float g, float b, float a);
+
+	// Decomposes a hex value into (r,g,b) components and constructs a color
 	Color(int hex);
 
+	// Bind the color to the currently active shader
+	// This will affect any 'uniform vec4 color' in a GLSL program
 	void bind();
+
+	// Exports this type to the target lua virtual machine
 	static void export_type(sol::state& target);
 };

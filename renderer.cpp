@@ -1,22 +1,25 @@
+#include <algorithm>
 #include <iostream>
 #include <glm/glm.hpp>
 
 #include "renderer.h"
 #include "framebuffer.h"
 
+// The default quad vertices
 float vertices[] = {
-	 // Vertices          // UV
 	 0.5f,  0.5f, 0.0f,   1.0f, 1.0f,
 	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
 	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
 	-0.5f,  0.5f, 0.0f,   0.0f, 1.0f
 };
 
+// The default quad indices
 const unsigned int indices[] = {
 	0, 1, 3,
 	1, 2, 3
 };
 
+// The default vertex shader program embedded into the source code
 const char* vertex_shader_src = "#version 330 core\n"
 "layout (location = 0) in vec3 a_pos;\n"
 "layout (location = 1) in vec2 a_uv;\n"
@@ -30,6 +33,7 @@ const char* vertex_shader_src = "#version 330 core\n"
 "	uv = a_uv;\n"
 "}\0";
 
+// The default fragment shader program embedded into the source code
 const char* fragment_shader_src = "#version 330 core\n"
 "in vec2 uv;"
 "out vec4 fragment;\n"
@@ -117,6 +121,7 @@ void Renderer::draw_frame() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	std::sort(command_queue.begin(), command_queue.end(), RenderCommand::ord_layer);
 	for(RenderCommand &command : command_queue) {
 		this->execute_command(command);
 	}
@@ -176,11 +181,19 @@ GLFWwindow* Renderer::get_window_ptr() {
 	return this->window;
 }
 
+void Renderer::quit() {
+	glfwSetWindowShouldClose(this->window, true);
+	glfwTerminate();
+}
+
 void Renderer::export_type(sol::state &target) {
-	sol::usertype<Renderer> renderer_type = target.new_usertype<Renderer>("Renderer");
-	renderer_type["queue_command"] = &Renderer::queue_command;
-	renderer_type["screen_width"] = sol::readonly(&Renderer::screen_width);
-	renderer_type["screen_height"] = sol::readonly(&Renderer::screen_height);
+	target.new_usertype<Renderer>(
+		"Renderer",
+		"queue_command", &Renderer::queue_command,
+		"screen_width", &Renderer::screen_width,
+		"screen_height", &Renderer::screen_height,
+		"quit", &Renderer::quit
+	);
 }
 
 RenderCommand::RenderCommand() {
@@ -232,6 +245,10 @@ RenderCommand& RenderCommand::with_rotation(float rotation) {
 RenderCommand& RenderCommand::with_layer(float layer) {
 	this->layer = layer;
 	return *this;
+}
+
+bool RenderCommand::ord_layer(RenderCommand& a, RenderCommand& b) {
+	return a.layer > b.layer;
 }
 
 void RenderCommand::export_type(sol::state &target) {

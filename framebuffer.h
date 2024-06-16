@@ -16,10 +16,20 @@ private:
 	unsigned int render_buffer = 0;
 public:
 	Framebuffer() : GlObject(glDeleteFramebuffers) { };
-	static Result<Framebuffer> create(unsigned int width, unsigned int height);
-	static void export_type(sol::state& target);
-	static void reset_to_default();
 	virtual void extra_delete();
+
+	// Attempts to create a framebuffer with the given dimensions
+	static Result<Framebuffer> create(unsigned int width, unsigned int height);
+
+	// Exports this type to the target lua virtual machine
+	static void export_type(sol::state& target);
+
+	// Unbinds all framebuffers
+	static void reset_to_default();
+
+	// Clears the framebuffer's depth and color values
 	void clear();
+
+	// Sets this framebuffer as active
 	void bind();
 };

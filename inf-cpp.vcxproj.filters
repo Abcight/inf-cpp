@@ -42,9 +42,6 @@
     <ClCompile Include="audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bindables.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
