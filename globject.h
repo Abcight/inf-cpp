@@ -14,11 +14,11 @@ template <typename T>
 class GlObject {
 private:
 	std::shared_ptr<void*> counter;
+	T gpu_destructor;
 public:
 	unsigned int handle;
 	virtual void extra_delete() {};
-	T gpu_destructor;
-	GlObject();
+	GlObject(T destructor);
 	~GlObject();
 };
 

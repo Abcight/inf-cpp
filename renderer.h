@@ -55,7 +55,7 @@ private:
 
 	friend void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 public:
-	static Result<Renderer> create();
+	static Result<Renderer> create(int width, int height, std::string title);
 	static void export_type(sol::state &target);
 
 	bool wants_next_frame();

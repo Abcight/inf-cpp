@@ -17,6 +17,7 @@ class Shader : Bindable, GlObject<SINGULAR_DESTRUCTOR> {
 private:
 	std::map<std::string, int> uniforms;
 public:
+	Shader() : GlObject(glDeleteProgram) { }
 	static Result<Shader> create(std::string vertex_source, std::string fragment_source);
 	void bind();
 	void set_int(const char* name, int value);

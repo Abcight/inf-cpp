@@ -132,6 +132,10 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;lua54.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\git\inf-cpp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="audio.cpp" />
@@ -151,6 +155,7 @@
     <ClInclude Include="bindable.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="framebuffer.h" />
+    <ClInclude Include="glmexport.h" />
     <ClInclude Include="globject.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="texture.h" />
@@ -158,6 +163,14 @@
     <ClInclude Include="result.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="irrKlang.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="lua54.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

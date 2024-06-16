@@ -47,7 +47,7 @@ void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 
-Result<Renderer> Renderer::create() {
+Result<Renderer> Renderer::create(int width, int height, std::string title) {
 	if (!glfw_present) {
 		glfwInit();
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -56,10 +56,7 @@ Result<Renderer> Renderer::create() {
 		glfw_present = true;
 	}
 
-	int width = 800;
-	int height = 600;
-
-	GLFWwindow* window = glfwCreateWindow(width, height, "GLFW Window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL)
 		return Result<Renderer>::Result("Failed to create GLFW window");
 
@@ -68,7 +65,7 @@ Result<Renderer> Renderer::create() {
 		return Result<Renderer>::Result("Failed to initialize GLAD");
 
 	glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, width, height);
 
 	Renderer value;
 	value.window = window;

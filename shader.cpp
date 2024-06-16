@@ -69,9 +69,6 @@ Result<Shader> Shader::create(std::string vertex_source, std::string fragment_so
 		result.uniforms[name] = uniform;
 	}
 
-	// set gpu destructor
-	result.gpu_destructor = glDeleteProgram;
-
 	return Result<Shader>(result);
 }
 

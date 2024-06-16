@@ -15,6 +15,7 @@ private:
 	Texture texture;
 	unsigned int render_buffer = 0;
 public:
+	Framebuffer() : GlObject(glDeleteFramebuffers) { };
 	static Result<Framebuffer> create(unsigned int width, unsigned int height);
 	static void export_type(sol::state& target);
 	static void reset_to_default();

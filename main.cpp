@@ -13,41 +13,14 @@
 #include "audio.h"
 #include "color.h"
 #include "framebuffer.h"
-
-static void export_glm(sol::state &target) {
-	sol::usertype<glm::vec2> vec2 = target.new_usertype<glm::vec2>(
-		"Vec2",
-		sol::constructors<glm::vec2(), glm::vec2(float, float)>(),
-		"x", &glm::vec2::x,
-		"y", &glm::vec2::y,
-		"lerp", [](glm::vec2 a, glm::vec2 b, float t) { return glm::mix(a, b, t); }
-	);
-
-	sol::usertype<glm::vec3> vec3 = target.new_usertype<glm::vec3>(
-		"Vec3",
-		sol::constructors<glm::vec3(), glm::vec3(float, float, float)>(),
-		"x", &glm::vec3::x,
-		"y", &glm::vec3::y,
-		"z", &glm::vec3::z,
-		"lerp", [](glm::vec3 a, glm::vec3 b, float t) { return glm::mix(a, b, t); }
-	);
-
-	sol::usertype<glm::vec4> vec4 = target.new_usertype<glm::vec4>(
-		"Vec4",
-		sol::constructors<glm::vec4(), glm::vec4(float, float, float, float)>(),
-		"x", &glm::vec4::x,
-		"y", &glm::vec4::y,
-		"z", &glm::vec4::z,
-		"a", &glm::vec4::a,
-		"lerp", [](glm::vec4 a, glm::vec4 b, float t) { return glm::mix(a, b, t); }
-	);
-}
+#include "glmexport.h"
 
 int main(int argc, char* argv[]) {
 	// select the project path
+	// if no path is specified, look for "game" subdirectory 
 	std::string target;
 	if (argc <= 1) {
-		target = "./test";
+		target = "./game";
 	} else {
 		target = std::string(argv[1]);
 	}
@@ -82,7 +55,7 @@ int main(int argc, char* argv[]) {
 	std::string title = vm.get_or("window_title", std::string("2D Engine"));
 
 	// initialize renderer & input
-	Result<Renderer> renderer_result = Renderer::create();
+	Result<Renderer> renderer_result = Renderer::create(width, height, title);
 	if (renderer_result.consume(std::cout)) {
 		glfwTerminate();
 		return 0;
@@ -97,8 +70,11 @@ int main(int argc, char* argv[]) {
 	auto result = vm.safe_script_file("main.lua", &sol::script_pass_on_error);
 	if (!result.valid())
 	{
-		std::cout << "Didn't detect any projects! Drag and drop a directory with main.lua onto the compiled executable.";
-		std::getchar();
+		std::cout << "Didn't detect any projects! Drag and drop a directory with main.lua onto the compiled executable." << std::endl;
+		std::cout << "[Press RETURN to exit]" << std::endl;
+		glfwSetWindowShouldClose(renderer.get_window_ptr(), true);
+		glfwTerminate();
+		std::cin.get();
 		return 0;
 	}
 

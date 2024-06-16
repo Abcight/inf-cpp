@@ -6,7 +6,6 @@
 Result<Framebuffer> Framebuffer::create(unsigned int width, unsigned int height) {
 	Framebuffer value;
 
-	value.gpu_destructor = glDeleteFramebuffers;
 	glGenFramebuffers(1, &value.handle);
 
 	glGenFramebuffers(1, &value.handle);

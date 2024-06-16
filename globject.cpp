@@ -1,10 +1,17 @@
 #include "globject.h"
 #include <iostream>
 
-template<>
-GlObject<SINGULAR_DESTRUCTOR>::GlObject() {
+template<typename T>
+GlObject<T>::GlObject(T destructor) {
 	this->counter = std::make_shared<void*>(nullptr);
-	this->gpu_destructor = nullptr;
+	this->gpu_destructor = destructor;
+	this->handle = 0;
+}
+
+template<>
+GlObject<SINGULAR_DESTRUCTOR>::GlObject(SINGULAR_DESTRUCTOR destructor) {
+	this->counter = std::make_shared<void*>(nullptr);
+	this->gpu_destructor = destructor;
 	this->handle = 0;
 }
 
@@ -17,9 +24,9 @@ GlObject<SINGULAR_DESTRUCTOR>::~GlObject() {
 }
 
 template<>
-GlObject<MULTIPLE_DESTRUCTOR>::GlObject() {
+GlObject<MULTIPLE_DESTRUCTOR>::GlObject(MULTIPLE_DESTRUCTOR destructor) {
 	this->counter = std::make_shared<void*>(nullptr);
-	this->gpu_destructor = nullptr;
+	this->gpu_destructor = destructor;
 	this->handle = 0;
 }
 
