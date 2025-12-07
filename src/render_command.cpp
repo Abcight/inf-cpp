@@ -10,7 +10,8 @@ RenderCommand::RenderCommand() {
 	this->scale = glm::vec2(1.0f, 1.0f);
 	this->rotation = 0.0f;
 	this->layer = 1.0f;
-	this->bindables = new Bindable * [10];
+	this->bindables.fill(nullptr);
+	this->bindables_length = 0;
 }
 
 RenderCommand& RenderCommand::to(Framebuffer* buffer) {
@@ -19,8 +20,10 @@ RenderCommand& RenderCommand::to(Framebuffer* buffer) {
 }
 
 RenderCommand& RenderCommand::with(Bindable* bindable) {
-	this->bindables[bindables_length] = bindable;
-	bindables_length++;
+	if (bindable != nullptr && bindables_length < 10) {
+		this->bindables[bindables_length] = bindable;
+		bindables_length++;
+	}
 	return *this;
 }
 

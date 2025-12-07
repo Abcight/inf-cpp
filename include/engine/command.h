@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 /// <summary>
 /// A singular command issued to the renderer during userland script execution.
 /// </summary>
@@ -10,7 +12,7 @@ private:
 	float rotation;
 	float layer;
 	Framebuffer* target = nullptr;
-	Bindable** bindables;
+	std::array<Bindable*, 10> bindables;
 	int bindables_length = 0;
 public:
 	RenderCommand();
