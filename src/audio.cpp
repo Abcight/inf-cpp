@@ -9,6 +9,7 @@
 bool Audio::initialized = false;
 ALCdevice* Audio::device = nullptr;
 ALCcontext* Audio::context = nullptr;
+std::vector<ALuint> Audio::active_sources;
 
 void Audio::init_openal() {
 	if (initialized) {
@@ -55,7 +56,30 @@ void Audio::init_openal() {
 	initialized = true;
 }
 
-
+void Audio::cleanup_stopped_sources() {
+	if (!initialized || !context) return;
+	
+	// Ensure context is current
+	ALCcontext* current = alcGetCurrentContext();
+	if (current != context) {
+		if (!alcMakeContextCurrent(context)) {
+			return;
+		}
+	}
+	
+	// Remove stopped sources
+	auto it = active_sources.begin();
+	while (it != active_sources.end()) {
+		ALint state;
+		alGetSourcei(*it, AL_SOURCE_STATE, &state);
+		if (state != AL_PLAYING && state != AL_PAUSED) {
+			alDeleteSources(1, &(*it));
+			it = active_sources.erase(it);
+		} else {
+			++it;
+		}
+	}
+}
 
 Result<Audio> Audio::open(std::string path) {
 	init_openal();
@@ -191,6 +215,9 @@ void Audio::play() {
 		}
 	}
 	
+	// Clean up stopped sources before creating new ones
+	cleanup_stopped_sources();
+	
 	// Clear any errors
 	alGetError();
 	
@@ -235,6 +262,9 @@ void Audio::play() {
 		alDeleteSources(1, &play_source);
 		return;
 	}
+	
+	// Track the source for cleanup
+	active_sources.push_back(play_source);
 }
 
 void Audio::export_type(sol::state& target) {

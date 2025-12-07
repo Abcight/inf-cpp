@@ -58,8 +58,7 @@ int main(int argc, char* argv[]) {
 	// initialize renderer & input
 	Result<Renderer> renderer_result = Renderer::create(width, height, title);
 	if (renderer_result.consume(std::cout)) {
-		glfwTerminate();
-		return 0;
+		return 1;
 	}
 	Renderer& renderer = renderer_result.unwrap();
 	Input input(renderer.get_window_ptr());
@@ -76,7 +75,6 @@ int main(int argc, char* argv[]) {
 		std::cout << err.what() << std::endl;
 		std::cout << "Tried to load from: " << std::filesystem::current_path() << std::endl;
 		glfwSetWindowShouldClose(renderer.get_window_ptr(), true);
-		glfwTerminate();
 		// Only wait for input if stdin is a terminal
 		if (isatty(STDIN_FILENO)) {
 			std::cout << "[Press RETURN to exit]" << std::endl;

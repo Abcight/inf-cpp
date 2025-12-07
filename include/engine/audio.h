@@ -3,6 +3,7 @@
 #include <AL/alc.h>
 #include <sol/sol.hpp>
 #include <memory>
+#include <vector>
 #include "result.h"
 
 /// <summary>
@@ -19,8 +20,14 @@ private:
 	static ALCdevice* device;
 	static ALCcontext* context;
 	
+	// Track active sources for cleanup
+	static std::vector<ALuint> active_sources;
+	
 	// Initialize OpenAL if not already done
 	static void init_openal();
+	
+	// Clean up stopped sources
+	static void cleanup_stopped_sources();
 	
 	// Helper to get buffer ID (0 if no buffer)
 	ALuint get_buffer_id() const {

@@ -43,9 +43,29 @@ Result<Texture> Texture::open(std::string path) {
 		return Result<Texture>(std::string("STB_IMAGE Load failure, at '") + path + "'");
 	}
 
+	// Determine OpenGL format based on channel count
+	GLenum internal_format = GL_RGB;
+	GLenum format = GL_RGB;
+	if (result.channel_count == 1) {
+		internal_format = GL_RED;
+		format = GL_RED;
+	} else if (result.channel_count == 2) {
+		internal_format = GL_RG;
+		format = GL_RG;
+	} else if (result.channel_count == 3) {
+		internal_format = GL_RGB;
+		format = GL_RGB;
+	} else if (result.channel_count == 4) {
+		internal_format = GL_RGBA;
+		format = GL_RGBA;
+	} else {
+		stbi_image_free(bytes);
+		return Result<Texture>(std::string("Unsupported channel count: ") + std::to_string(result.channel_count));
+	}
+
 	glGenTextures(1, &result.handle);
 	glBindTexture(GL_TEXTURE_2D, result.handle);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, result.width, result.height, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
+	glTexImage2D(GL_TEXTURE_2D, 0, internal_format, result.width, result.height, 0, format, GL_UNSIGNED_BYTE, bytes);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(bytes);

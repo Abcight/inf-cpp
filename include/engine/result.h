@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <cassert>
 #include <sol/sol.hpp>
 
 /// <summary>
@@ -29,13 +30,21 @@ public:
 	Result(std::string error) { is_err = true; m_error = error; }
 	static Result Wrap(std::string error, std::string inner) { return Result(error + "\n" + inner); }
 
-	bool is_error() { return is_err; }
-	bool is_value() { return !is_err; }
+	bool is_error() const { return is_err; }
+	bool is_value() const { return !is_err; }
 
-	T& unwrap() { return m_value; }
+	T& unwrap() {
+		assert(!is_err && "Attempted to unwrap error Result");
+		return m_value;
+	}
+	const T& unwrap() const {
+		assert(!is_err && "Attempted to unwrap error Result");
+		return m_value;
+	}
 	std::string& error() { return m_error; }
+	const std::string& error() const { return m_error; }
 
-	bool consume(std::ostream& os) {
+	bool consume(std::ostream& os) const {
 		if (is_err) { os << m_error; }
 		return is_err;
 	}
