@@ -10,6 +10,10 @@ EXECUTABLE := $(BUILD_DIR)/bin/inf-cpp
 # Default to demo-snake if no path is provided
 GAME_DIR ?= demos/demo-snake
 
+# Catch-all target to prevent Make from complaining about unknown targets
+%:
+	@:
+
 # Setup: Install all dependencies and build tools (Ubuntu)
 setup:
 	@sudo apt-get update
@@ -27,8 +31,18 @@ build:
 	@cd $(BUILD_DIR) && make
 
 # Run: Build and run the project
+# Usage: make run [path]
+#   make run                    # Uses default (demos/demo-snake)
+#   make run demos/demo-squares # Runs demos/demo-squares
 run: build
-	@$(EXECUTABLE) $(abspath $(GAME_DIR))
+	@$(eval RUN_ARGS := $(filter-out $@,$(MAKECMDGOALS)))
+	@if [ -n "$(RUN_ARGS)" ]; then \
+		GAME_DIR="$(firstword $(RUN_ARGS))"; \
+	else \
+		GAME_DIR="$(GAME_DIR)"; \
+	fi; \
+	echo "Running $(EXECUTABLE) with game directory: $$GAME_DIR"; \
+	$(EXECUTABLE) $(abspath $$GAME_DIR)
 
 # Clean: Remove build directory
 clean:
@@ -44,8 +58,7 @@ help:
 	@echo ""
 	@echo "Usage examples:"
 	@echo "  make run                    # Run demo-snake (default)"
-	@echo "  make run GAME_DIR=game      # Run main game"
-	@echo "  make run GAME_DIR=demos/demo-dogs  # Run demo-dogs"
+	@echo "  make run demos/demo-squares # Run demo-squares"
+	@echo "  make run demos/demo-dogs    # Run demo-dogs"
 	@echo ""
 	@echo "Quick start: make setup && make run"
-

@@ -19,7 +19,7 @@ This will:
 
 - `make setup` - Install all dependencies and build tools (Ubuntu/Debian)
 - `make build` - Configure and build the project
-- `make run` - Build and run the project (defaults to `game/` directory)
+- `make run` - Build and run the project (defaults to `demos/demo-snake` directory)
 - `make clean` - Remove build artifacts
 - `make help` - Show available commands
 

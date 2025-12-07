@@ -28,11 +28,11 @@ endif()
 
 # Include directories:
 # - System packages (GLFW, Lua, OpenAL, libsndfile) are found via find_package/pkg-config
-#   and automatically added to include path
-# - Bundled header-only libraries (GLM, sol2, GLAD) are explicitly included
+# - Bundled header-only libraries (GLM, sol2, GLAD) in include/
+# - Project headers in include/engine/
 include_directories(
-    ${CMAKE_SOURCE_DIR}                    # Project headers
-    ${CMAKE_SOURCE_DIR}/include            # Bundled headers (GLM, sol2, GLAD)
+    ${CMAKE_SOURCE_DIR}/include/engine     # Project headers
+    ${CMAKE_SOURCE_DIR}/include            # Bundled third-party headers (for #include <glm/...>)
     ${LUA_INCLUDE_DIRS}                    # Lua system headers
     ${SNDFILE_INCLUDE_DIRS}                # libsndfile system headers
 )
@@ -51,36 +51,14 @@ find_library(OPENAL_LIB NAMES openal)
 pkg_check_modules(SNDFILE REQUIRED sndfile>=1.0)
 
 # Source files
-set(SOURCES
-    main.cpp
-    audio.cpp
-    color.cpp
-    framebuffer.cpp
-    glad.c
-    globject.cpp
-    input.cpp
-    renderer.cpp
-    render_command.cpp
-    shader.cpp
-    texture.cpp
+file(GLOB_RECURSE SOURCES
+    "${CMAKE_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/*.c"
 )
 
-# Header files
-set(HEADERS
-    audio.h
-    bindable.h
-    color.h
-    command.h
-    framebuffer.h
-    glmexport.h
-    globject.h
-    input.h
-    renderer.h
-    result.h
-    shader.h
-    stb_image.h
-    texture.h
-    luatype.h
+# Header files (all in include/engine/ directory)
+file(GLOB_RECURSE HEADERS
+    "${CMAKE_SOURCE_DIR}/include/engine/*.h"
 )
 
 # Create executable
