@@ -52,13 +52,10 @@ void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 Result<Renderer> Renderer::create(int width, int height, std::string title) {
-	if (!glfw_present) {
-		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfw_present = true;
-	}
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL)
@@ -173,17 +170,16 @@ void Renderer::execute_command(RenderCommand command) {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-bool Renderer::wants_next_frame() {
+bool Renderer::wants_next_frame() const {
 	return !glfwWindowShouldClose(window);
 }
 
-GLFWwindow* Renderer::get_window_ptr() {
+GLFWwindow* Renderer::get_window_ptr() const {
 	return this->window;
 }
 
 void Renderer::quit() {
 	glfwSetWindowShouldClose(this->window, true);
-	glfwTerminate();
 }
 
 void Renderer::export_type(sol::state &target) {

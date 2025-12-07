@@ -11,7 +11,6 @@
 #include "framebuffer.h"
 #include "command.h"
 
-static bool glfw_present;
 
 /// <summary>
 /// An object that owns a system Window and allows drawing inside of it.
@@ -34,7 +33,7 @@ public:
 	static void export_type(sol::state &target);
 
 	// Does the program want to continue?
-	bool wants_next_frame();
+	bool wants_next_frame() const;
 
 	// Pushes a command into the command queue
 	void queue_command(RenderCommand command);
@@ -50,7 +49,7 @@ public:
 
 	// Returns the underlying system window pointer
 	// This is the window this renderer will be drawing to
-	GLFWwindow* get_window_ptr();
+	GLFWwindow* get_window_ptr() const;
 };
 
 void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height);

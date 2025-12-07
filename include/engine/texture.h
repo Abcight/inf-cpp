@@ -18,6 +18,18 @@ private:
 public:
 	Texture();
 	Texture(unsigned int width, unsigned int height);
+	
+	// Copy constructor - shares the OpenGL texture handle
+	Texture(const Texture& other) = default;
+	
+	// Move constructor
+	Texture(Texture&& other) noexcept = default;
+	
+	// Copy assignment - shares the OpenGL texture handle
+	Texture& operator=(const Texture& other) = default;
+	
+	// Move assignment
+	Texture& operator=(Texture&& other) noexcept = default;
 
 	// Attempts to load an image file from a given path and store it
 	// inside the GPU's VRAM.

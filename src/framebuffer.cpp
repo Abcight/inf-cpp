@@ -6,7 +6,9 @@
 Result<Framebuffer> Framebuffer::create(unsigned int width, unsigned int height) {
 	Framebuffer value;
 
-	glGenFramebuffers(1, &value.handle);
+	GLuint fb_handle;
+	glGenFramebuffers(1, &fb_handle);
+	value.set_handle(fb_handle);
 	glBindFramebuffer(GL_FRAMEBUFFER, value.handle);
 
 	value.texture = Texture(width, height);

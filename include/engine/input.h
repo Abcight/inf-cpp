@@ -22,13 +22,13 @@ public:
 	void update_keymap();
 
 	// Returns true if the given key is pressed
-	bool get_key(char key);
+	bool get_key(char key) const;
 
 	// Returns true if the given key is pressed once
-	bool get_key_down(char key);
+	bool get_key_down(char key) const;
 
 	// Returns mouse cursor coordinates
-	glm::vec2 get_cursor_position();
+	glm::vec2 get_cursor_position() const;
 
 	// Exports this type to the target lua virtual machine
 	static void export_type(sol::state& target);

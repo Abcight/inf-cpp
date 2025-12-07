@@ -16,6 +16,20 @@ private:
 	unsigned int render_buffer = 0;
 public:
 	Framebuffer() : GlObject(glDeleteFramebuffers) { };
+	
+	// Copy constructor - shares the OpenGL framebuffer handle and texture
+	// Note: render_buffer is also shared (deleted only when last copy is destroyed)
+	Framebuffer(const Framebuffer& other) = default;
+	
+	// Move constructor
+	Framebuffer(Framebuffer&& other) noexcept = default;
+	
+	// Copy assignment - shares the OpenGL framebuffer handle and texture
+	Framebuffer& operator=(const Framebuffer& other) = default;
+	
+	// Move assignment
+	Framebuffer& operator=(Framebuffer&& other) noexcept = default;
+	
 	virtual void extra_delete();
 
 	// Attempts to create a framebuffer with the given dimensions

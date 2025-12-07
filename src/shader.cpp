@@ -39,7 +39,8 @@ Result<Shader> Shader::create(std::string vertex_source, std::string fragment_so
 
 	// link both shaders into a single program
 	Shader result;
-	result.handle = glCreateProgram();
+	GLuint program_handle = glCreateProgram();
+	result.set_handle(program_handle);
 	glAttachShader(result.handle, vertex_shader);
 	glAttachShader(result.handle, fragment_shader);
 	glLinkProgram(result.handle);

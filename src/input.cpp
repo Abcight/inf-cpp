@@ -16,15 +16,15 @@ void Input::update_keymap() {
 	}
 }
 
-bool Input::get_key(char key) {
+bool Input::get_key(char key) const {
 	return this->key_map_hold[key];
 }
 
-bool Input::get_key_down(char key) {
+bool Input::get_key_down(char key) const {
 	return this->key_map_press[key];
 }
 
-glm::vec2 Input::get_cursor_position() {
+glm::vec2 Input::get_cursor_position() const {
 	double xpos, ypos;
 	int width, height;
 	glfwGetWindowSize(this->window_ptr, &width, &height);

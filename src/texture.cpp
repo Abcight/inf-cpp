@@ -9,7 +9,7 @@ Texture::Texture() : GlObject(glDeleteTextures) {
 	this->width = 0;
 	this->height = 0;
 	this->channel_count = 0;
-	this->handle = 0;
+	this->set_handle(0);
 }
 
 Texture::Texture(unsigned int width, unsigned int height) : GlObject(glDeleteTextures) {
@@ -17,7 +17,9 @@ Texture::Texture(unsigned int width, unsigned int height) : GlObject(glDeleteTex
 	this->height = height;
 	this->channel_count = 0;
 
-	glGenTextures(1, &this->handle);
+	GLuint tex_handle;
+	glGenTextures(1, &tex_handle);
+	this->set_handle(tex_handle);
 	glBindTexture(GL_TEXTURE_2D, this->handle);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -63,7 +65,9 @@ Result<Texture> Texture::open(std::string path) {
 		return Result<Texture>(std::string("Unsupported channel count: ") + std::to_string(result.channel_count));
 	}
 
-	glGenTextures(1, &result.handle);
+	GLuint tex_handle;
+	glGenTextures(1, &tex_handle);
+	result.set_handle(tex_handle);
 	glBindTexture(GL_TEXTURE_2D, result.handle);
 	glTexImage2D(GL_TEXTURE_2D, 0, internal_format, result.width, result.height, 0, format, GL_UNSIGNED_BYTE, bytes);
 	glGenerateMipmap(GL_TEXTURE_2D);

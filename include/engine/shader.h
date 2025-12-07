@@ -19,6 +19,19 @@ private:
 	std::map<std::string, int> uniforms;
 public:
 	Shader() : GlObject(glDeleteProgram) { }
+	
+	// Copy constructor - shares the OpenGL program handle
+	Shader(const Shader& other) = default;
+	
+	// Move constructor
+	Shader(Shader&& other) noexcept = default;
+	
+	// Copy assignment - shares the OpenGL program handle
+	Shader& operator=(const Shader& other) = default;
+	
+	// Move assignment
+	Shader& operator=(Shader&& other) noexcept = default;
+	
 	static Result<Shader> create(std::string vertex_source, std::string fragment_source);
 	void bind();
 	void set_int(const char* name, int value);

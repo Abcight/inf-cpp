@@ -51,13 +51,13 @@ find_library(OPENAL_LIB NAMES openal)
 pkg_check_modules(SNDFILE REQUIRED sndfile>=1.0)
 
 # Source files
-file(GLOB_RECURSE SOURCES
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/*.c"
 )
 
 # Header files (all in include/engine/ directory)
-file(GLOB_RECURSE HEADERS
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/include/engine/*.h"
 )
 

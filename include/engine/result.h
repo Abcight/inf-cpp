@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include <cassert>
+#include <iostream>
+#include <cstdlib>
 #include <sol/sol.hpp>
 
 /// <summary>
@@ -33,12 +34,22 @@ public:
 	bool is_error() const { return is_err; }
 	bool is_value() const { return !is_err; }
 
+	// Panic function: prints error and aborts program
+	[[noreturn]] static void panic(const std::string& message) {
+		std::cerr << "PANIC: " << message << std::endl;
+		std::abort();
+	}
+
 	T& unwrap() {
-		assert(!is_err && "Attempted to unwrap error Result");
+		if (is_err) {
+			panic("Attempted to unwrap error Result. Error: " + m_error);
+		}
 		return m_value;
 	}
 	const T& unwrap() const {
-		assert(!is_err && "Attempted to unwrap error Result");
+		if (is_err) {
+			panic("Attempted to unwrap error Result. Error: " + m_error);
+		}
 		return m_value;
 	}
 	std::string& error() { return m_error; }
