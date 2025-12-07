@@ -62,11 +62,11 @@ Result<Renderer> Renderer::create(int width, int height, std::string title) {
 
 	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL)
-		return Result<Renderer>::Result("Failed to create GLFW window");
+		return Result<Renderer>("Failed to create GLFW window");
 
 	glfwMakeContextCurrent(window);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		return Result<Renderer>::Result("Failed to initialize GLAD");
+		return Result<Renderer>("Failed to initialize GLAD");
 
 	glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
 	glViewport(0, 0, width, height);
@@ -109,7 +109,7 @@ Result<Renderer> Renderer::create(int width, int height, std::string title) {
 
 	glEnable(GL_DEPTH_TEST);
 
-	return Result<Renderer>::Result(value);
+	return Result<Renderer>(value);
 }
 
 void Renderer::draw_frame() {

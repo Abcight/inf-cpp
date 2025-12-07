@@ -1,26 +1,49 @@
 #pragma once
-#include <ik/irrKlang.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 #include <sol/sol.hpp>
+#include <memory>
 #include "result.h"
 
 /// <summary>
 /// Represents a singular audio file loaded into the program's memory.
-/// Supports playing through the irrklang sound engine.
+/// Supports playing through the OpenAL sound engine.
 /// </summary>
 class Audio {
 private:
-	// The globally available audio engine pointer
-	static irrklang::ISoundEngine* ENGINE;
-
-	// The audio handle created by irrklang
-	irrklang::ISoundSource* handle = nullptr;
-
-	// The number of bytes in this audio file
-	int data_size;
-
-	// Audio file data (bytes)
-	char* data;
+	// Reference-counted OpenAL buffer
+	std::shared_ptr<ALuint> buffer;
+	
+	// Whether OpenAL is initialized
+	static bool initialized;
+	static ALCdevice* device;
+	static ALCcontext* context;
+	
+	// Initialize OpenAL if not already done
+	static void init_openal();
+	
+	// Helper to get buffer ID (0 if no buffer)
+	ALuint get_buffer_id() const {
+		return buffer ? *buffer : 0;
+	}
+	
 public:
+	// Default constructor
+	Audio() = default;
+	
+	// Share the buffer via reference counting
+	Audio(const Audio& other) = default;
+	
+	// Move transfers buffer ownership
+	Audio(Audio&& other) noexcept = default;
+	
+	// Share the buffer via reference counting
+	Audio& operator=(const Audio& other) = default;
+	
+	Audio& operator=(Audio&& other) noexcept = default;
+	
+	~Audio() = default;
+	
 	// Attempts to load an audio file from a given path
 	static Result<Audio> open(std::string path);
 

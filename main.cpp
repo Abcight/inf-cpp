@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <chrono>
+#include <unistd.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -70,12 +71,18 @@ int main(int argc, char* argv[]) {
 	auto result = vm.safe_script_file("main.lua", &sol::script_pass_on_error);
 	if (!result.valid())
 	{
-		std::cout << "Didn't detect any projects! Drag and drop a directory with main.lua onto the compiled executable." << std::endl;
-		std::cout << "[Press RETURN to exit]" << std::endl;
+		sol::error err = result;
+		std::cout << "Error loading main.lua:" << std::endl;
+		std::cout << err.what() << std::endl;
+		std::cout << "Tried to load from: " << std::filesystem::current_path() << std::endl;
 		glfwSetWindowShouldClose(renderer.get_window_ptr(), true);
 		glfwTerminate();
-		std::cin.get();
-		return 0;
+		// Only wait for input if stdin is a terminal
+		if (isatty(STDIN_FILENO)) {
+			std::cout << "[Press RETURN to exit]" << std::endl;
+			std::cin.get();
+		}
+		return 1;
 	}
 
 	// perform the main loop
