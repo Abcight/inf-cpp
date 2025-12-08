@@ -1,49 +1,46 @@
-# inf-cpp
+<h1 align="center">engine-2d</h1>
+<p align="center">A 2D game engine with Lua scripting.<br>
+<i><b>🗃️ Archived 🗃️</b></i>
+</p>
 
-A 2D game engine built with C++, OpenGL, GLFW, Lua, and OpenAL.
+This project is a cleaned-up version of an old assignment I gave myself. I just wanted to freshen it up a bit for everyone to see.
 
-## Quick Start (Ubuntu/Debian)
-
-The easiest way to get started:
+## Getting Started 🧰
+The easiest way to get up and running on Ubuntu/Debian:
 
 ```bash
 make setup && make run
 ```
 
 This will:
-1. Install all dependencies and build tools
+1. Install dependencies and build tools
 2. Build the project
-3. Run the game
+3. Launch the default demo
 
-## Available Make Commands
-
-- `make setup` - Install all dependencies and build tools (Ubuntu/Debian)
-- `make build` - Configure and build the project
-- `make run` - Build and run the project (defaults to `demos/demo-snake` directory)
-- `make clean` - Remove build artifacts
-- `make help` - Show available commands
-
-## Running
-
-The engine expects a game directory with `main.lua` and optionally `config.lua`:
+## Running 🎮
+The engine expects a game directory with `main.lua` (and optionally `config.lua`):
 
 ```bash
-# Run with default game directory
-./build/bin/inf-cpp
+# Run with default game directory (demos/demo-snake)
+./build/bin/engine2d
 
 # Or specify a custom game directory
-./build/bin/inf-cpp /path/to/game/directory
+./build/bin/engine2d /path/to/game/directory
 ```
 
-Example game directories are provided in:
-- `demos/demo-squares/` - Squares demo
-- `demos/demo-snake/` - Snake demo
-- `demos/demo-dogs/` - Dogs demo
-- `demos/demo-platformer/` - Infinite platformer demo
+Example game directories:
+- `demos/demo-squares/` — Squares demo
+- `demos/demo-snake/` — Snake demo
+- `demos/demo-dogs/` — Dogs demo
+- `demos/demo-platformer/` — Infinite platformer demo
 
-## Development
+## Make Commands 🛠️
+- `make setup` — Install dependencies and build tools (Ubuntu/Debian)
+- `make build` — Configure and build the project
+- `make run` — Build and run (defaults to `demos/demo-snake`)
+- `make clean` — Remove build artifacts
+- `make help` — Show available commands
 
-The project uses:
-- **C++17** standard
-- **CMake 3.15+** for build system
-- **Make** as the generator (default on Linux)
+## Development 🧑‍💻
+- C++17
+- CMake 3.15+ (with Make on Linux)
