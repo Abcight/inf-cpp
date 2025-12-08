@@ -39,6 +39,7 @@ Example game directories are provided in:
 - `demos/demo-squares/` - Squares demo
 - `demos/demo-snake/` - Snake demo
 - `demos/demo-dogs/` - Dogs demo
+- `demos/demo-platformer/` - Infinite platformer demo
 
 ## Development
 
