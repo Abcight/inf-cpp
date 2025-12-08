@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(inf-cpp VERSION 1.0.0 LANGUAGES CXX C)
+project(engine-2d VERSION 1.0.0 LANGUAGES CXX C)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -62,10 +62,11 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
 )
 
 # Create executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+set(TARGET_NAME engine2d)
+add_executable(${TARGET_NAME} ${SOURCES} ${HEADERS})
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${TARGET_NAME}
     PRIVATE
         ${OPENGL_LIBRARIES}
         glfw
@@ -76,7 +77,7 @@ target_link_libraries(${PROJECT_NAME}
 
 # Link system libraries
 if(UNIX AND NOT APPLE)
-    target_link_libraries(${PROJECT_NAME} PRIVATE
+    target_link_libraries(${TARGET_NAME} PRIVATE
         dl
         pthread
         m
@@ -84,6 +85,6 @@ if(UNIX AND NOT APPLE)
 endif()
 
 # Install target (optional)
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${TARGET_NAME}
     RUNTIME DESTINATION bin
 )

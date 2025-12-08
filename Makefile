@@ -5,7 +5,7 @@
 
 # Build directory
 BUILD_DIR := build
-EXECUTABLE := $(BUILD_DIR)/bin/inf-cpp
+EXECUTABLE := $(BUILD_DIR)/bin/engine2d
 
 # Default to demo-snake if no path is provided
 GAME_DIR ?= demos/demo-snake
